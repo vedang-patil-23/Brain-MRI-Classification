@@ -1,158 +1,138 @@
-# Brain-Tumor-Classification-Using-MRI
+# Brain MRI Classification with MRI
+
+This repository contains Jupyter Notebook code for classifying brain MRI images using various deep learning models. The code covers multiple approaches, including Convolutional Neural Networks (CNNs), transfer learning with pre-trained models, and feature extraction for traditional machine learning classifiers.
+
+## Table of Contents
+
+- [Overview](#overview)
+- [Dependencies](#dependencies)
+- [Data Preparation](#data-preparation)
+- [Models](#models)
+  - [CNN Model](#cnn-model)
+  - [VGG16 Model](#vgg16-model)
+  - [ResNet50 Model](#resnet50-model)
+  - [DenseNet121 Model](#densenet121-model)
+  - [EfficientNetB0 Model](#efficientnetb0-model)
+  - [InceptionV3 Model](#inceptionv3-model)
+  - [Xception Model](#xception-model)
+- [Feature Extraction and Classification](#feature-extraction-and-classification)
+  - [SVM Classifier](#svm-classifier)
+  - [Random Forest Classifier](#random-forest-classifier)
+- [Evaluation](#evaluation)
+- [Usage](#usage)
+- [License](#license)
 
 ## Overview
-This repository contains Jupyter Notebook code for training and evaluating various machine learning models to classify brain MRI images. The notebook demonstrates the use of Convolutional Neural Networks (CNNs) and Transfer Learning with popular architectures like VGG16, ResNet50, DenseNet121, EfficientNetB0, InceptionV3, and Xception. Additionally, it includes traditional machine learning models like Support Vector Machines (SVM) and Random Forest Classifiers for comparison.
 
-## Contents
-1. **Data Preparation**
-   - Load and preprocess brain MRI images.
-   - Use `ImageDataGenerator` for data augmentation and splitting into training and validation sets.
+This notebook demonstrates several approaches to classifying brain MRI images. The methods include:
 
-2. **Model Training and Evaluation**
-   - **CNN Model:** A custom CNN architecture is built and trained.
-   - **Transfer Learning Models:**
-     - **VGG16**
-     - **ResNet50**
-     - **DenseNet121**
-     - **EfficientNetB0**
-     - **InceptionV3**
-     - **Xception**
-   - **Traditional Machine Learning Models:**
-     - **Support Vector Machine (SVM)**
-     - **Random Forest Classifier**
+- Custom CNN architectures
+- Transfer learning with popular pre-trained models
+- Feature extraction and classification with traditional machine learning classifiers
 
-3. **Performance Metrics**
-   - Accuracy and loss plots for each model.
-   - Confusion matrices to evaluate the performance of each model on the validation set.
+## Dependencies
 
-4. **Prediction**
-   - Functions to predict the class of new MRI images using the trained models.
+The following libraries are required:
 
-## Requirements
-- TensorFlow
+- TensorFlow 2.x
 - Keras
 - NumPy
 - Matplotlib
 - Seaborn
-- Scikit-Learn
+- scikit-learn
 
-To install the necessary packages, you can use:
+You can install the dependencies using pip:
+
 ```bash
 pip install tensorflow numpy matplotlib seaborn scikit-learn
 ```
 
-## Data
-The notebook assumes that the data is organized in the following directory structure:
-```
-data/
-    Train/
-        Normal/
-        Tumor/
-    Validation/
-        Normal/
-        Tumor/
-```
-Please update the `train_dir` and `val_dir` variables in the notebook to point to your data directories.
+## Data Preparation
 
-## Code Overview
+The dataset consists of brain MRI images divided into training and validation sets. The images are stored in the following directories:
 
-### 1. Data Preparation
-```python
-train_dir = "path/to/train"
-val_dir = "path/to/validation"
+- `Train`: Contains training images
+- `Validation`: Contains validation images
 
-train_datagen = ImageDataGenerator(rescale=1./255,
-                                   rotation_range=20,
-                                   width_shift_range=0.2,
-                                   height_shift_range=0.2,
-                                   shear_range=0.2,
-                                   zoom_range=0.2,
-                                   horizontal_flip=True,
-                                   fill_mode='nearest')
+The images are preprocessed using `ImageDataGenerator` to perform data augmentation and normalization.
 
-val_datagen = ImageDataGenerator(rescale=1./255)
+## Models
 
-train_generator = train_datagen.flow_from_directory(train_dir,
-                                                    target_size=(150, 150),
-                                                    batch_size=32,
-                                                    class_mode='binary')
+### CNN Model
 
-val_generator = val_datagen.flow_from_directory(val_dir,
-                                                target_size=(150, 150),
-                                                batch_size=32,
-                                                class_mode='binary')
-```
+A custom Convolutional Neural Network (CNN) is built and trained for binary classification (Tumor vs. Normal). The CNN consists of multiple convolutional and pooling layers followed by fully connected layers.
 
-### 2. CNN Model
-```python
-cnn_model = Sequential([
-    Conv2D(32, (3, 3), activation='relu', input_shape=(150, 150, 3)),
-    MaxPooling2D(2, 2),
-    Conv2D(64, (3, 3), activation='relu'),
-    MaxPooling2D(2, 2),
-    Conv2D(128, (3, 3), activation='relu'),
-    MaxPooling2D(2, 2),
-    Flatten(),
-    Dense(512, activation='relu'),
-    Dropout(0.5),
-    Dense(1, activation='sigmoid')
-])
+### VGG16 Model
 
-cnn_model.compile(optimizer='adam', loss='binary_crossentropy', metrics=['accuracy'])
-cnn_history = cnn_model.fit(train_generator, validation_data=val_generator, epochs=10)
-```
+Transfer learning is used with the VGG16 model. The pre-trained VGG16 model is fine-tuned for binary classification by adding a few dense layers on top of it.
 
-### 3. Transfer Learning Models
-Each transfer learning model follows a similar pattern:
-```python
-from tensorflow.keras.applications import VGG16
-from tensorflow.keras.models import Sequential
-from tensorflow.keras.layers import Flatten, Dense, Dropout
+### ResNet50 Model
 
-vgg_base = VGG16(input_shape=(150, 150, 3), include_top=False, weights='imagenet')
-for layer in vgg_base.layers:
-    layer.trainable = False
+Similarly, the ResNet50 model is utilized for transfer learning. The ResNet50 architecture is adapted for binary classification tasks.
 
-vgg_model = Sequential([
-    vgg_base,
-    Flatten(),
-    Dense(512, activation='relu'),
-    Dropout(0.5),
-    Dense(1, activation='sigmoid')
-])
+### DenseNet121 Model
 
-vgg_model.compile(optimizer='adam', loss='binary_crossentropy', metrics=['accuracy'])
-vgg_history = vgg_model.fit(train_generator, validation_data=val_generator, epochs=10)
-```
+The DenseNet121 model is employed using transfer learning to classify brain MRI images. The pre-trained DenseNet121 is fine-tuned for the binary classification task.
 
-### 4. Traditional Machine Learning Models
-SVM and Random Forest models are trained using features extracted from a pre-trained VGG16 model.
-```python
-from sklearn.svm import SVC
-from sklearn.ensemble import RandomForestClassifier
+### EfficientNetB0 Model
 
-# Feature extraction and model training
-```
+EfficientNetB0, another state-of-the-art pre-trained model, is utilized for brain MRI classification using transfer learning.
 
-### 5. Prediction Functions
-Functions to predict new images:
-```python
-def predict_with_cnn(image_path, model):
-    # Prediction code
-```
-Update `image_path` to your image file and call the function with the model you wish to use.
+### InceptionV3 Model
+
+InceptionV3 is used as a pre-trained model for feature extraction and classification of brain MRI images.
+
+### Xception Model
+
+The Xception model is employed for classification tasks by leveraging transfer learning and fine-tuning the pre-trained model.
+
+## Feature Extraction and Classification
+
+### SVM Classifier
+
+Features are extracted from the VGG16 model and used to train a Support Vector Machine (SVM) classifier for brain MRI classification.
+
+### Random Forest Classifier
+
+Similarly, features extracted from the VGG16 model are used to train a Random Forest classifier.
+
+## Evaluation
+
+The performance of each model is evaluated using accuracy, confusion matrices, and plots showing accuracy and loss curves over epochs. 
 
 ## Usage
-1. Modify the paths to your dataset in the `train_dir` and `val_dir` variables.
-2. Run the notebook to train the models and evaluate their performance.
-3. Use the provided prediction functions to classify new MRI images.
 
-## Results
-The notebook includes plots for accuracy and loss curves, as well as confusion matrices for each model.
+To use the trained models for prediction, you can call the provided functions with the path to an MRI image. Example:
+
+```python
+from tensorflow.keras.preprocessing import image
+
+def predict_with_cnn(image_path, model):
+    img = image.load_img(image_path, target_size=(150, 150))  # Adjust target_size if needed
+    img_array = image.img_to_array(img)
+    img_array = np.expand_dims(img_array, axis=0) / 255.0  # Preprocess for CNN model
+
+    prediction = model.predict(img_array)[0][0]
+    label = 'Brain with Tumor' if prediction > 0.5 else 'Normal Brain'
+
+    plt.imshow(img)
+    plt.title(f'Label: {label}')
+    plt.axis('off')
+    plt.show()
+
+    print(f"The selected Brain MRI Image is of a {label}")
+
+# Example usage
+image_path = "path/to/your/image.jpg"
+predict_with_cnn(image_path, cnn_model)
+```
+
+Replace `"path/to/your/image.jpg"` with the path to your image file.
 
 ## License
+
 This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
 
-## Contact
-For any questions or issues, please contact [Me](mailto:vedangrpatil.2305@gmail.com).
+---
 
+Feel free to customize the sections as needed for your specific use case!
