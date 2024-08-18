@@ -154,5 +154,5 @@ The notebook includes plots for accuracy and loss curves, as well as confusion m
 This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
 
 ## Contact
-For any questions or issues, please contact [Your Name](mailto:vedangrpatil.2305@gmail.com).
+For any questions or issues, please contact [Me](mailto:vedangrpatil.2305@gmail.com).
 
