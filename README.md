@@ -29,6 +29,7 @@ This notebook demonstrates several approaches to classifying brain MRI images. T
 - Custom CNN architectures
 - Transfer learning with popular pre-trained models
 - Feature extraction and classification with traditional machine learning classifiers
+- Dataset was used from Kaggle Dataset Repositories [Link to Dataset](https://www.kaggle.com/datasets/muhammadehsan000/brain-mri-imaging-data)
 
 ## Dependencies
 
