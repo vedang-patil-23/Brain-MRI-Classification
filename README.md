@@ -1,4 +1,4 @@
-# Brain MRI Classification with MRI
+# Brain MRI Classification
 
 This repository contains Jupyter Notebook code for classifying brain MRI images using various deep learning models. The code covers multiple approaches, including Convolutional Neural Networks (CNNs), transfer learning with pre-trained models, and feature extraction for traditional machine learning classifiers.
 
